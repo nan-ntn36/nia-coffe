@@ -1,7 +1,8 @@
 import { formatCurrency } from './formatCurrency';
 
-export function createOrderMessage(cartItems, total) {
+export function createOrderMessage(cartItems, total, orderId) {
   const timestamp = new Date().toLocaleString('vi-VN');
+  const orderCode = orderId ? `#${String(orderId).padStart(4, '0')}` : '';
 
   const itemLines = cartItems
     .map(
@@ -12,6 +13,7 @@ export function createOrderMessage(cartItems, total) {
 
   return (
     `🛒 ĐƠN HÀNG MỚI — Nia Coffee\n` +
+    (orderCode ? `📌 Mã đơn: ${orderCode}\n` : '') +
     `🕐 ${timestamp}\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `${itemLines}\n` +

@@ -1,17 +1,45 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { HiSearch } from 'react-icons/hi';
-import { products, categories } from '../../data/products';
+import { getProducts, getCategories } from '../../services/api';
 import ProductCard from './ProductCard';
 
 export default function ProductGrid() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getCategories(),
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+        // Fallback: import static data
+        const { products: staticProducts, categories: staticCategories } = await import('../../data/products');
+        setProducts(staticProducts);
+        setCategories(staticCategories);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
     if (activeCategory !== 'all') {
-      filtered = filtered.filter((p) => p.category === activeCategory);
+      const catSlug = activeCategory;
+      filtered = filtered.filter((p) =>
+        p.category?.slug === catSlug || p.category === catSlug
+      );
     }
 
     if (searchQuery.trim()) {
@@ -19,12 +47,12 @@ export default function ProductGrid() {
       filtered = filtered.filter(
         (p) =>
           p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query)
+          (p.description || '').toLowerCase().includes(query)
       );
     }
 
     return filtered;
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, products]);
 
   return (
     <div>
@@ -57,9 +85,10 @@ export default function ProductGrid() {
           Tất cả ({products.length})
         </button>
         {categories.map((cat) => {
-          const count = products.filter((p) => p.category === cat.id).length;
-          const isGreenCat = cat.id === 'matcha' || cat.id === 'tea';
-          const isBrownCat = cat.id === 'cacao';
+          const slug = cat.slug || cat.id;
+          const count = products.filter((p) => (p.category?.slug || p.category) === slug).length;
+          const isGreenCat = slug === 'matcha' || slug === 'tea';
+          const isBrownCat = slug === 'cacao';
           const activeClass = isGreenCat
             ? 'bg-green text-white shadow-lg shadow-green/20 scale-105'
             : isBrownCat
@@ -67,14 +96,14 @@ export default function ProductGrid() {
             : 'bg-accent text-white shadow-lg shadow-accent/20 scale-105';
           return (
             <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              key={slug}
+              onClick={() => setActiveCategory(slug)}
               className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
-                activeCategory === cat.id
+                activeCategory === slug
                   ? activeClass
                   : 'bg-white text-coffee-600 hover:bg-coffee-100 border border-coffee-200 hover:border-coffee-300'
               }`}
-              id={`filter-${cat.id}`}
+              id={`filter-${slug}`}
             >
               <span className="text-base">{cat.icon}</span>
               {cat.name} ({count})
@@ -89,7 +118,7 @@ export default function ProductGrid() {
           {filteredProducts.map((product, index) => (
             <div
               key={product.id}
-              className="animate-slide-up"
+              className="animate-slide-up h-full"
               style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
             >
               <ProductCard product={product} />

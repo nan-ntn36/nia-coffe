@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiOutlineShoppingBag, HiOutlineMenuAlt3, HiOutlineX } from 'react-icons/hi';
 import { useCart } from '../../context/CartContext';
+import { useSettings } from '../../context/SettingsContext';
 
 export default function Header() {
   const { totalItems, toggleCart } = useCart();
+  const { settings } = useSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -38,12 +40,12 @@ export default function Header() {
           {/* Left: Logo */}
           <Link to="/" className="flex items-center gap-2.5 group" id="logo-link">
             <img
-              src="/logo.png"
+              src={settings.logo || '/logo.png'}
               alt="Nia Coffee Logo"
               className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover transition-transform duration-300 group-hover:scale-110 border-2 border-green/40 shadow-lg shadow-green/10"
             />
             <span className="font-heading text-xl lg:text-2xl font-bold text-white group-hover:text-green-light transition-colors duration-300">
-              Nia Coffee
+              {settings.shop_name || 'Nia Coffee'}
             </span>
           </Link>
 

@@ -1,15 +1,27 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { products } from '../../data/products';
+import { getProducts } from '../../services/api';
 import ProductCard from '../product/ProductCard';
 
 export default function FeaturedProducts() {
-  // Pick featured items (items with badges), limit to 6
-  const featured = products
-    .filter(
-      (p) =>
-        p.badge === 'Bán chạy' || p.badge === 'Hot' || p.badge === 'Mới'
-    )
-    .slice(0, 6);
+  const [featured, setFeatured] = useState([]);
+
+  useEffect(() => {
+    async function fetchFeatured() {
+      try {
+        const products = await getProducts();
+        const items = products
+          .filter((p) => p.badge === 'Bán chạy' || p.badge === 'Hot' || p.badge === 'Mới')
+          .slice(0, 6);
+        setFeatured(items);
+      } catch {
+        // Fallback to static
+        const { products } = await import('../../data/products');
+        setFeatured(products.filter((p) => p.badge).slice(0, 6));
+      }
+    }
+    fetchFeatured();
+  }, []);
 
   return (
     <section id="featured" className="py-20 lg:py-28 bg-cream relative overflow-hidden">
@@ -21,7 +33,7 @@ export default function FeaturedProducts() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header - Kaffa style: centered, green label, serif title */}
+        {/* Section Header */}
         <div className="text-center mb-14 lg:mb-16">
           <span className="inline-block text-green text-xs font-semibold tracking-[0.3em] uppercase mb-4 relative">
             <span className="absolute left-full ml-3 top-1/2 w-8 h-px bg-green/30" />
@@ -41,7 +53,7 @@ export default function FeaturedProducts() {
           {featured.map((product, index) => (
             <div
               key={product.id}
-              className="animate-slide-up"
+              className="animate-slide-up h-full"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <ProductCard product={product} />
@@ -49,7 +61,7 @@ export default function FeaturedProducts() {
           ))}
         </div>
 
-        {/* View All CTA - Kaffa style: pill button with green */}
+        {/* View All CTA */}
         <div className="text-center mt-14">
           <Link
             to="/menu"
@@ -57,9 +69,7 @@ export default function FeaturedProducts() {
             id="view-all-products"
           >
             Xem tất cả menu
-            <span className="group-hover:translate-x-1 transition-transform duration-300">
-              →
-            </span>
+            <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
           </Link>
         </div>
       </div>

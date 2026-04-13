@@ -31,7 +31,7 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-coffee-300/30 transition-all duration-500 hover:-translate-y-1.5 border border-coffee-100/50"
+    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-coffee-300/30 transition-all duration-500 hover:-translate-y-1.5 border border-coffee-100/50 flex flex-col h-full"
       id={`product-card-${product.id}`}
     >
       {/* Image Container */}
@@ -94,11 +94,11 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Content */}
-      <div className="p-4 lg:p-5">
-        <h3 className="font-heading text-lg font-bold text-coffee-800 mb-1.5 group-hover:text-accent transition-colors duration-300">
+      <div className="p-4 lg:p-5 flex flex-col flex-1">
+        <h3 className="font-heading text-lg font-bold text-coffee-800 mb-1.5 group-hover:text-accent transition-colors duration-300 truncate">
           {product.name}
         </h3>
-        <p className="text-[13px] text-coffee-400 mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-[13px] text-coffee-400 mb-4 line-clamp-2 leading-relaxed min-h-[2.5rem]">
           {product.description}
         </p>
         <div className="flex items-center justify-between">

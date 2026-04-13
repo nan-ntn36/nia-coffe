@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { HiLocationMarker, HiPhone, HiClock } from 'react-icons/hi';
+import { useSettings } from '../../context/SettingsContext';
 
 export default function Footer() {
+  const { settings } = useSettings();
   return (
     <footer className="relative overflow-hidden">
       {/* Dark coffee beans background - like Kaffa */}
@@ -19,17 +21,16 @@ export default function Footer() {
         <div className="text-center mb-12">
           <Link to="/" className="inline-flex flex-col items-center gap-3 group">
             <img
-              src="/logo.png"
+              src={settings.logo || '/logo.png'}
               alt="Nia Coffee Logo"
               className="w-16 h-16 rounded-full object-cover border-2 border-green/30 transition-transform duration-300 group-hover:scale-110"
             />
             <span className="font-heading text-2xl font-bold text-white">
-              Nia Coffee
+              {settings.shop_name || 'Nia Coffee'}
             </span>
           </Link>
           <p className="text-white/40 text-sm mt-3 max-w-xs mx-auto leading-relaxed">
-            Hương vị cà phê Việt Nam trong từng giọt.
-            Chúng tôi mang đến trải nghiệm hoàn hảo cho bạn.
+            {settings.footer_desc || 'Hương vị cà phê Việt Nam trong từng giọt.'}
           </p>
         </div>
 
@@ -72,21 +73,21 @@ export default function Footer() {
             <div className="flex flex-col items-center gap-2">
               <HiLocationMarker className="w-5 h-5 text-green-light" />
               <span className="text-green-light text-sm font-semibold">Địa chỉ:</span>
-              <span className="text-white/60 text-sm">TP. Hồ Chí Minh, Việt Nam</span>
+              <span className="text-white/60 text-sm">{settings.address || '53 Phạm Huy Thông, Gò Vấp, TP. Hồ Chí Minh'}</span>
             </div>
 
             {/* Phone */}
             <div className="flex flex-col items-center gap-2">
               <HiPhone className="w-5 h-5 text-green-light" />
               <span className="text-green-light text-sm font-semibold">Zalo:</span>
-              <span className="text-white/60 text-sm">0912345678</span>
+              <span className="text-white/60 text-sm">{settings.zalo_phone_1 || '0385637299'}/{settings.zalo_phone_2 || '0376598497'}</span>
             </div>
 
             {/* Hours */}
             <div className="flex flex-col items-center gap-2">
               <HiClock className="w-5 h-5 text-green-light" />
               <span className="text-green-light text-sm font-semibold">Giờ mở cửa:</span>
-              <span className="text-white/60 text-sm">7:00 — 22:00 hàng ngày</span>
+              <span className="text-white/60 text-sm">{settings.open_hours || '5:00 — 10:00'} hàng ngày</span>
             </div>
           </div>
         </div>

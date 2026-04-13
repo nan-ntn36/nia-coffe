@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
+import { useSettings } from '../../context/SettingsContext';
 
 export default function HeroSection() {
+  const { settings } = useSettings();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Dark coffee beans background */}
       <div className="absolute inset-0 bg-coffee-900">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: 'url(/images/hero-bg.webp)' }}
+          style={{ backgroundImage: `url(${settings.hero_bg || '/images/hero-bg.webp'})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-coffee-900/60 via-coffee-900/40 to-coffee-900/80" />
       </div>
@@ -24,7 +26,7 @@ export default function HeroSection() {
         {/* Logo */}
         <div className="animate-fade-in mb-8">
           <img
-            src="/logo.png"
+            src={settings.logo || '/logo.png'}
             alt="Nia Coffee Logo"
             className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mx-auto rounded-full object-cover border-2 border-green/30 shadow-2xl shadow-black/30"
           />
@@ -34,7 +36,7 @@ export default function HeroSection() {
         <h1 className="animate-slide-up font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-[1.15] tracking-tight">
           <span className="text-green-light italic block sm:inline">Hương vị</span>
           <br className="hidden sm:block" />
-          <span className="text-white">Cà Phê Việt Nam</span>
+          <span className="text-white">{(settings.hero_title || 'Hương vị Cà Phê Việt Nam').replace('Hương vị ', '')}</span>
         </h1>
 
         {/* Subtitle */}
@@ -42,8 +44,7 @@ export default function HeroSection() {
           className="animate-slide-up text-base sm:text-lg text-white/60 mb-10 max-w-lg mx-auto leading-relaxed font-light"
           style={{ animationDelay: '0.15s' }}
         >
-          Thưởng thức khoảnh khắc bình yên bên ly cà phê đậm đà,
-          được chọn lọc từ những hạt cà phê tốt nhất.
+          {settings.hero_subtitle || 'Thưởng thức khoảnh khắc bình yên bên ly cà phê đậm đà, được chọn lọc từ những hạt cà phê tốt nhất.'}
         </p>
 
         {/* CTA Buttons - Kaffa style: green primary, dark outline secondary */}
